@@ -1,14 +1,50 @@
+const express = require("express");
+const app = express();
+
 const helpers = require("./data/helpers");
 
-// helpers.addProject({project_name: "project1", description: "description"})
-// .then(() => {
-//     helpers.getProjects()
-//     .then(projects => console.log(projects))
-// })
+app.use(express.json());
 
-// helpers.addResource({resource_name: "asdaw"}, 1);
+app.post("/api/projects/:id/resources", (req, res) => {
+    helpers.addResource(req.body, req.params.id)
+    .then(() => res.sendStatus(201))
+    .catch(() => res.status(500).json({message: "could not add resource"}))
+});
 
-// helpers.addTask({task_name: "task1", project_id: 1, completed: false})
-// .then(count => console.log(count));
+app.get("/api/projects/:id/resources", (req, res) => {
+    helpers.getResources(req.params.id)
+    .then(resources => res.status(200).json(resources))
+    .catch(() => res.status(500).json({message: "could not get resources"}));
+});
 
-helpers.getTasks().then(tasks => console.log(tasks));
+app.get("/api/projects", (req, res) => {
+    helpers.getProjects()
+    .then(projects => res.status(200).json(projects))
+    .catch(() => res.status(500).json({message: "could not get projects"}));
+});
+
+app.post("/api/projects", (req, res) => {
+    helpers.addProject(req.body)
+    .then(() => res.sendStatus(201))
+    .catch(() => res.status(500).json({message: "could not add project"}));
+});
+
+app.post("/api/projects/:id/tasks", (req, res) => {
+    helpers.addTask(req.body, req.params.id)
+    .then(() => res.sendStatus(201))
+    .catch(err => res.status(500).json({message: "could not create task"}));
+});
+
+app.get("/api/projects/:id/tasks", (req, res) => {
+    helpers.getTasks(req.params.id)
+    .then(tasks => {
+        res.status(200).json(
+            tasks.map(task => {
+                return {...task, completed: task.completed ? true : false};
+            })
+        );
+    })
+    .catch(() => res.status(500).json({message: "could not get tasks"}));
+});
+
+app.listen(5000, () => console.log("server listening port 5000"));

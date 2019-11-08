@@ -11,17 +11,16 @@ module.exports = {
         return db("resources").insert(resource)
         .then(ids => db("resource_projects").insert({project_id: project_id, resource_id: ids[0]}));
     },
-    getResources: () => {
-        return db("resources").select("*");
+    getResources: projectId => {
+        return db("resource_projects")
+        .select("id", "resource_name")
+        .where({project_id: projectId})
+        .join("resources", "resource_id", "=", "resources.id");
     },
-    addTask: task => {
-        return db("tasks").insert(task);
+    addTask: (task, projectId) => {
+        return db("tasks").insert({...task, project_id: projectId});
     },
-    getTasks: () => {
-        return db("tasks").select("*")
-        .then(tasks => {
-            tasks.forEach(task => task.completed = task.completed ? true : false);
-            return tasks;
-        });
+    getTasks: (projectId) => {
+        return db("tasks").select("*");
     }
 }
