@@ -14,6 +14,7 @@ exports.up = function(knex) {
       .notNullable()
       .references("id")
       .inTable("projects");
+      table.boolean("completed").notNullable();
   })
   .createTable("resources", table => {
       table.increments();
@@ -21,15 +22,16 @@ exports.up = function(knex) {
   })
   .createTable("resource_projects", table => {
     table.integer("project_id")
-      .unsigned()
-      .notNullable()
-      .references("id")
-      .inTable("projects");
-      table.integer("resource_id")
-      .unsigned()
-      .notNullable()
-      .references("id")
-      .inTable("resources");
+    .unsigned()
+    .notNullable()
+    .references("id")
+    .inTable("projects");
+    table.integer("resource_id")
+    .unsigned()
+    .notNullable()
+    .references("id")
+    .inTable("resources");
+    table.primary(["project_id", "resource_id"]);
   });
 };
 
