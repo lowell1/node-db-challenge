@@ -1,0 +1,11 @@
+{
+  "name": "node-db-challenge",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/lowell1/node-db-challenge.git",
+  "license": "MIT",
+  "dependencies": {
+    "knex": "^0.20.1",
+    "sqlite3": "^4.1.0"
+  }
+}
